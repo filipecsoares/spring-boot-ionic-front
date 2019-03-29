@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
-import { NavController, MenuController } from '@ionic/angular';
-import { CredenciaisDTO } from 'src/models/credenciais.dto';
+import { Component } from "@angular/core";
+import { NavController, MenuController } from "@ionic/angular";
+import { CredenciaisDTO } from "src/models/credenciais.dto";
+import { AuthService } from "src/services/auth.service";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: "app-home",
+  templateUrl: "home.page.html",
+  styleUrls: ["home.page.scss"]
 })
 export class HomePage {
-
-  creds : CredenciaisDTO = {
+  creds: CredenciaisDTO = {
     email: "",
     senha: ""
   };
 
-  constructor(public navCtrl: NavController, public menuCtrl: MenuController) {
-
-  }
+  constructor(
+    public auth: AuthService,
+    public navCtrl: NavController,
+    public menuCtrl: MenuController
+  ) {}
 
   ionViewWillEnter() {
     this.menuCtrl.get().then((menu: HTMLIonMenuElement) => {
@@ -31,7 +33,12 @@ export class HomePage {
   }
 
   login() {
-    console.log(this.creds);
-    this.navCtrl.navigateRoot('/categorias');
+    this.auth.authenticate(this.creds).subscribe(
+      response => {
+        console.log(response.headers.get("Authorization"));
+        this.navCtrl.navigateRoot("/categorias");
+      },
+      error => {}
+    );
   }
 }
