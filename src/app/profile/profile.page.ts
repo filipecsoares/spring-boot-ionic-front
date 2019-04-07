@@ -15,7 +15,8 @@ export class ProfilePage implements OnInit {
 
   constructor(
     public storage: StorageService,
-    public clienteService: ClienteService
+    public clienteService: ClienteService,
+    public navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -26,8 +27,14 @@ export class ProfilePage implements OnInit {
           this.cliente = response;
           this.getImageIfExists();
         },
-        error => {}
+        error => {
+          if (error.status == 403) {
+            this.navCtrl.navigateRoot("/home");
+          }
+        }
       );
+    } else {
+      this.navCtrl.navigateRoot("/home");
     }
   }
 
