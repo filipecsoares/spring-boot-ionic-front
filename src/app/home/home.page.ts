@@ -32,6 +32,16 @@ export class HomePage {
     });
   }
 
+  ionViewDidEnter() {
+    this.auth.refreshToken().subscribe(
+      response => {
+        this.auth.successfulLogin(response.headers.get("Authorization"));
+        this.navCtrl.navigateRoot("/categorias");
+      },
+      error => {}
+    );
+  }
+
   login() {
     this.auth.authenticate(this.creds).subscribe(
       response => {
